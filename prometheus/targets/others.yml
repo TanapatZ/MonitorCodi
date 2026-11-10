@@ -1,0 +1,5 @@
+# Gateways, firewalls, NVR, NDI converters, vMix/OBS PCs, etc. (ping only)
+- targets: ["192.168.10.1"]
+  labels: {name: gateway, site: HQ, role: gateway}
+- targets: ["192.168.30.5"]
+  labels: {name: ndi-discovery-server, site: HQ, role: server}

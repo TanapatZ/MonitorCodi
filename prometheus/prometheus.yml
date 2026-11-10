@@ -1,0 +1,123 @@
+global:
+  scrape_interval: 30s
+  evaluation_interval: 30s
+  external_labels:
+    org: my-organization
+
+rule_files:
+  - /etc/prometheus/alert.rules.yml
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: ["alertmanager:9093"]
+
+scrape_configs:
+  # ------------------------------------------------ the stack itself
+  - job_name: prometheus
+    static_configs: [{targets: ["localhost:9090"]}]
+  - job_name: alertmanager
+    static_configs: [{targets: ["alertmanager:9093"]}]
+  - job_name: grafana
+    static_configs: [{targets: ["grafana:3000"]}]
+  - job_name: node
+    static_configs: [{targets: ["node-exporter:9100"]}]
+  - job_name: cadvisor
+    static_configs: [{targets: ["cadvisor:8080"]}]
+  - job_name: snmp_exporter
+    static_configs: [{targets: ["snmp-exporter:9116"]}]
+  - job_name: blackbox_exporter
+    static_configs: [{targets: ["blackbox-exporter:9115"]}]
+
+  # ------------------------------------------------ SNMP: switches
+  - job_name: snmp_switches
+    scrape_interval: 30s
+    scrape_timeout: 25s
+    metrics_path: /snmp
+    params:
+      auth: [switch_v2]
+      module: [if_mib]
+    file_sd_configs:
+      - files: [/etc/prometheus/targets/switches.yml]
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: snmp-exporter:9116
+
+  # ------------------------------------------------ SNMP: access points
+  # For UniFi APs you can use module: [ubiquiti_unifi] (client counts, radio stats)
+  - job_name: snmp_aps
+    scrape_interval: 30s
+    scrape_timeout: 25s
+    metrics_path: /snmp
+    params:
+      auth: [switch_v2]
+      module: [if_mib]
+    file_sd_configs:
+      - files: [/etc/prometheus/targets/aps.yml]
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: snmp-exporter:9116
+
+  # ------------------------------------------------ ICMP: everything
+  - job_name: icmp
+    scrape_interval: 15s
+    metrics_path: /probe
+    params:
+      module: [icmp]
+    file_sd_configs:
+      - files:
+          - /etc/prometheus/targets/switches.yml
+          - /etc/prometheus/targets/aps.yml
+          - /etc/prometheus/targets/cameras.yml
+          - /etc/prometheus/targets/others.yml
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115
+
+  # ------------------------------------------------ HTTP: camera web UI
+  - job_name: http_cameras
+    scrape_interval: 30s
+    metrics_path: /probe
+    params:
+      module: [http_any]
+    file_sd_configs:
+      - files: [/etc/prometheus/targets/cameras.yml]
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115
+
+  # ------------------------------------------------ TCP: NDI sources / discovery server
+  - job_name: ndi_tcp
+    scrape_interval: 15s
+    metrics_path: /probe
+    params:
+      module: [tcp_connect]
+    file_sd_configs:
+      - files: [/etc/prometheus/targets/ndi.yml]
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115
+
+  # ------------------------------------------------ OPTIONAL: UniFi (profile "unifi")
+  # - job_name: unpoller
+  #   static_configs: [{targets: ["unpoller:9130"]}]

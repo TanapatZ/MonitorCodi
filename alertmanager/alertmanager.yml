@@ -1,0 +1,33 @@
+route:
+  receiver: default
+  group_by: [alertname, site]
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+  routes:
+    - matchers: [severity="critical"]
+      receiver: default
+      repeat_interval: 1h
+
+receivers:
+  - name: default
+    # --- pick one (or more) and fill in ---
+    # telegram_configs:
+    #   - bot_token: "123456:ABC..."
+    #     chat_id: -1001234567890
+    #     parse_mode: HTML
+    # slack_configs:
+    #   - api_url: https://hooks.slack.com/services/XXX/YYY/ZZZ
+    #     channel: "#network-alerts"
+    #     send_resolved: true
+    # email_configs:
+    #   - to: noc@example.com
+    #     from: alerts@example.com
+    #     smarthost: smtp.example.com:587
+    #     auth_username: alerts@example.com
+    #     auth_password: "secret"
+
+inhibit_rules:
+  - source_matchers: [severity="critical"]
+    target_matchers: [severity="warning"]
+    equal: [alertname, instance]

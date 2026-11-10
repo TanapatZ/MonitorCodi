@@ -1,0 +1,7 @@
+# Used for ICMP ping + HTTP web UI check
+- targets: ["192.168.30.21"]
+  labels: {name: cam-stage-left, site: HQ, role: camera}
+- targets: ["192.168.30.22"]
+  labels: {name: cam-stage-right, site: HQ, role: camera}
+- targets: ["192.168.30.23"]
+  labels: {name: cam-back, site: HQ, role: camera}

@@ -1,0 +1,140 @@
+# Network monitoring stack: switches, APs, cameras, NDI
+# Usage: cp .env.example .env  ->  edit  ->  docker compose up -d
+name: netmon
+
+services:
+  # ---------------------------------------------------------------- Prometheus
+  prometheus:
+    image: prom/prometheus:v2.53.0
+    container_name: prometheus
+    restart: unless-stopped
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=${PROM_RETENTION:-90d}
+      - --web.enable-lifecycle          # reload config: curl -X POST localhost:9090/-/reload
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus/alert.rules.yml:/etc/prometheus/alert.rules.yml:ro
+      - ./prometheus/targets:/etc/prometheus/targets:ro
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    networks: [monitoring]
+    depends_on: [snmp-exporter, blackbox-exporter, alertmanager]
+
+  # ------------------------------------------------------------------- Grafana
+  grafana:
+    image: grafana/grafana:11.1.0
+    container_name: grafana
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?set GRAFANA_ADMIN_PASSWORD in .env}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_SERVER_ROOT_URL: ${GRAFANA_ROOT_URL:-http://localhost:3000}
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /var/lib/grafana/dashboards/network-overview.json
+      TZ: ${TZ:-UTC}
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports:
+      - "3000:3000"
+    networks: [monitoring]
+    depends_on: [prometheus]
+
+  # -------------------------------------------------------------- Alertmanager
+  alertmanager:
+    image: prom/alertmanager:v0.27.0
+    container_name: alertmanager
+    restart: unless-stopped
+    command:
+      - --config.file=/etc/alertmanager/alertmanager.yml
+      - --storage.path=/alertmanager
+    volumes:
+      - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - alertmanager_data:/alertmanager
+    ports:
+      - "9093:9093"
+    networks: [monitoring]
+
+  # ------------------------------------------- SNMP exporter (switches + APs)
+  snmp-exporter:
+    image: prom/snmp-exporter:v0.26.0
+    container_name: snmp-exporter
+    restart: unless-stopped
+    # default snmp.yml (modules: if_mib, ubiquiti_unifi, aruba, mikrotik, ...) ships in the image;
+    # auth.yml adds your own SNMP credentials on top.
+    command:
+      - --config.file=/etc/snmp_exporter/snmp.yml
+      - --config.file=/etc/snmp_exporter/auth.yml
+    volumes:
+      - ./snmp/auth.yml:/etc/snmp_exporter/auth.yml:ro
+    networks: [monitoring]
+
+  # ------------------------- Blackbox exporter (ping / HTTP / TCP incl. NDI)
+  blackbox-exporter:
+    image: prom/blackbox-exporter:v0.25.0
+    container_name: blackbox-exporter
+    restart: unless-stopped
+    command:
+      - --config.file=/etc/blackbox/blackbox.yml
+    cap_add: [NET_RAW]                  # needed for ICMP
+    sysctls:
+      net.ipv4.ping_group_range: "0 2147483647"
+    volumes:
+      - ./blackbox/blackbox.yml:/etc/blackbox/blackbox.yml:ro
+    networks: [monitoring]
+
+  # ------------------------------------------------ Host + container metrics
+  node-exporter:
+    image: prom/node-exporter:v1.8.1
+    container_name: node-exporter
+    restart: unless-stopped
+    command:
+      - --path.rootfs=/host
+    pid: host
+    volumes:
+      - /:/host:ro,rslave
+    networks: [monitoring]
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.49.1
+    container_name: cadvisor
+    restart: unless-stopped
+    privileged: true
+    devices:
+      - /dev/kmsg
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    networks: [monitoring]
+
+  # -------------------- OPTIONAL: UniFi controller metrics (APs, clients, RF)
+  # Enable with: docker compose --profile unifi up -d
+  # Then uncomment the "unpoller" job in prometheus/prometheus.yml
+  unpoller:
+    image: ghcr.io/unpoller/unpoller:latest
+    container_name: unpoller
+    restart: unless-stopped
+    profiles: [unifi]
+    environment:
+      UP_UNIFI_DEFAULT_URL: ${UNIFI_URL:-https://unifi.local:8443}
+      UP_UNIFI_DEFAULT_USER: ${UNIFI_USER:-unpoller}
+      UP_UNIFI_DEFAULT_PASS: ${UNIFI_PASS:-changeme}
+      UP_UNIFI_DEFAULT_VERIFY_SSL: "false"
+      UP_INFLUXDB_DISABLE: "true"
+      UP_PROMETHEUS_HTTP_LISTEN: 0.0.0.0:9130
+    networks: [monitoring]
+
+networks:
+  monitoring:
+    driver: bridge
+
+volumes:
+  prometheus_data:
+  grafana_data:
+  alertmanager_data:

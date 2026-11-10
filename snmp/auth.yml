@@ -1,0 +1,15 @@
+# SNMP credentials. Name must match "auth:" in prometheus.yml (switch_v2).
+# Prefer SNMPv3 in production - example below.
+auths:
+  switch_v2:
+    version: 2
+    community: public          # <-- CHANGE to your read-only community
+
+  # switch_v3:
+  #   version: 3
+  #   username: monitor
+  #   security_level: authPriv
+  #   auth_protocol: SHA
+  #   password: "auth-password"
+  #   priv_protocol: AES
+  #   priv_password: "priv-password"

@@ -1,0 +1,6 @@
+- targets: ["192.168.20.11"]
+  labels: {name: ap-lobby, site: HQ, role: ap}
+- targets: ["192.168.20.12"]
+  labels: {name: ap-office-1, site: HQ, role: ap}
+- targets: ["192.168.20.13"]
+  labels: {name: ap-studio, site: HQ, role: ap}
