@@ -1,7 +1,13 @@
 # One entry per switch. 'name', 'site', 'role' labels show up in Grafana + alerts.
 - targets: ["192.168.10.2"]
-  labels: {name: core-sw-01, site: HQ, role: switch}
+  labels: {name: eventopsLx3/1, site: HQ, role: switch}
 - targets: ["192.168.10.3"]
-  labels: {name: access-sw-01, site: HQ, role: switch}
+  labels: {name: eventopsLx3/2, site: HQ, role: switch}
 - targets: ["192.168.10.4"]
-  labels: {name: studio-sw-01, site: HQ, role: switch}
+  labels: {name: eventopsAudi1, site: HQ, role: switch}
+- targets: ["192.168.10.2"]
+  labels: {name: eventopsAudi2, site: HQ, role: switch}
+- targets: ["192.168.10.3"]
+  labels: {name: eventopsLx3Core, site: HQ, role: switch}
+- targets: ["10.13.104.254"]
+  labels: {name: eventopsLx3Core, site: HQ, role: switch}

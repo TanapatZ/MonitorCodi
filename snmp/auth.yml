@@ -3,7 +3,7 @@
 auths:
   switch_v2:
     version: 2
-    community: public          # <-- CHANGE to your read-only community
+    community: eventops         # <-- CHANGE to your read-only community
 
   # switch_v3:
   #   version: 3
