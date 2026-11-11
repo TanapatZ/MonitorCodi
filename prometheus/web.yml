@@ -1,0 +1,2 @@
+basic_auth_users:
+  ${Prometheus_ADMIN_USER}: '${Prometheus_ADMIN_PASSWORD}'
