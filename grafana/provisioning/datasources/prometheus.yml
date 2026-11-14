@@ -6,5 +6,9 @@ datasources:
     access: proxy
     url: http://prometheus:9090
     isDefault: true
+    basicAuth: true
+    basicAuthUser: $PROMETHEUS_BASIC_USER
+    secureJsonData:
+      basicAuthPassword: $PROMETHEUS_BASIC_PASSWORD
     jsonData:
       timeInterval: 30s

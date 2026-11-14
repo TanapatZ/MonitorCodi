@@ -15,6 +15,9 @@ global:
 scrape_configs:
   # ------------------------------------------------ the stack itself
   - job_name: prometheus
+    basic_auth:
+      username: codiarena
+      password_file: /etc/prometheus/prometheus.password
     static_configs: [{targets: ["localhost:9090"]}]
   - job_name: grafana
     static_configs: [{targets: ["grafana:3000"]}]
@@ -29,7 +32,7 @@ scrape_configs:
     metrics_path: /snmp
     params:
       auth: [switch_v2]
-      module: [if_mib]
+      module: [if_mib, system]
     file_sd_configs:
       - files: [/etc/prometheus/targets/switches.yml]
     relabel_configs:
@@ -40,17 +43,54 @@ scrape_configs:
       - target_label: __address__
         replacement: snmp-exporter:9116
 
-  # ------------------------------------------------ SNMP: access points
-  # For UniFi APs you can use module: [ubiquiti_unifi] (client counts, radio stats)
-  - job_name: snmp_aps
-    scrape_interval: 30s
-    scrape_timeout: 25s
+  # ------------------------------------------------ SNMP: Aruba controller
+  - job_name: aruba_event_clients
+    scrape_interval: 60s
+    scrape_timeout: 55s
+    metrics_path: /snmp
+    params:
+      auth: [ap_v2]
+      module: [event_clients]
+    file_sd_configs:
+      - files: [/etc/prometheus/targets/aruba-controller.local.yml]
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: snmp-exporter:9116
+    metric_relabel_configs:
+      - source_labels: [apLocation]
+        regex: 'SIT-AP04L|SIT-AP04I|SIT-AP04F|SIT-AP04B|SIT-AP01J|SIT-AP01I|SIT-AP01G|SIT-AP01D'
+        action: keep
+
+  - job_name: event_ap_switches
+    scrape_interval: 60s
+    scrape_timeout: 55s
     metrics_path: /snmp
     params:
       auth: [switch_v2]
-      module: [if_mib]
+      module: [if_mib, event_lldp, event_poe]
     file_sd_configs:
-      - files: [/etc/prometheus/targets/aps.yml]
+      - files: [/etc/prometheus/targets/event-switches.local.yml]
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: snmp-exporter:9116
+
+  - job_name: aruba_controller
+    scrape_interval: 60s
+    scrape_timeout: 55s
+    metrics_path: /snmp
+    params:
+      auth: [ap_v2]
+      module: [aruba_controller]
+    file_sd_configs:
+      - files: [/etc/prometheus/targets/aruba-controller.local.yml]
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target

@@ -1,0 +1,926 @@
+{
+  "id": null,
+  "links": [
+    {
+      "targetBlank": false,
+      "title": "Back to EventOps overview",
+      "type": "link",
+      "url": "/d/eventops-noc-pro"
+    }
+  ],
+  "panels": [
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cg46fq5i2i48wf"
+      },
+      "description": "Controller SNMP scrape health. A failure means AP data cannot be refreshed.",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "color": "red",
+                  "text": "UNREACHABLE"
+                },
+                "1": {
+                  "color": "green",
+                  "text": "OK"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {},
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cg46fq5i2i48wf"
+          },
+          "expr": "up{job=\"snmp_aps\"}",
+          "instant": true,
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "Controller SNMP",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cg46fq5i2i48wf"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "green",
+            "mode": "fixed"
+          },
+          "decimals": 0,
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 0
+      },
+      "id": 2,
+      "options": {},
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cg46fq5i2i48wf"
+          },
+          "expr": "sum((wlanAPStatus{job=\"snmp_aps\"} and on(instance,wlanAPMacAddress) wlanAPGroupName{job=\"snmp_aps\",wlanAPGroupName=\"SIT-Event\"}) == bool 1)",
+          "instant": true,
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "APs online",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cg46fq5i2i48wf"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 8,
+        "y": 0
+      },
+      "id": 3,
+      "options": {},
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cg46fq5i2i48wf"
+          },
+          "expr": "sum((wlanAPStatus{job=\"snmp_aps\"} and on(instance,wlanAPMacAddress) wlanAPGroupName{job=\"snmp_aps\",wlanAPGroupName=\"SIT-Event\"}) == bool 2)",
+          "instant": true,
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "APs offline",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cg46fq5i2i48wf"
+      },
+      "description": "Group membership comes directly from the controller.",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 12,
+        "y": 0
+      },
+      "id": 4,
+      "options": {},
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cg46fq5i2i48wf"
+          },
+          "expr": "count((wlanAPStatus{job=\"snmp_aps\"} and on(instance,wlanAPMacAddress) wlanAPGroupName{job=\"snmp_aps\",wlanAPGroupName=\"SIT-Event\"}))",
+          "instant": true,
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "APs in SIT-Event",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cg46fq5i2i48wf"
+      },
+      "description": "Clients associated with radios on APs in this group.",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 16,
+        "y": 0
+      },
+      "id": 5,
+      "options": {},
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cg46fq5i2i48wf"
+          },
+          "expr": "sum((wlanAPRadioNumAssociatedClients{job=\"snmp_aps\"} and on(instance,wlanAPMacAddress) wlanAPGroupName{job=\"snmp_aps\",wlanAPGroupName=\"SIT-Event\"}))",
+          "instant": true,
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "Associated clients",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cg46fq5i2i48wf"
+      },
+      "description": "Sum of the controller-reported BSSID bandwidth gauges; not link capacity.",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "unit": "bps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 20,
+        "y": 0
+      },
+      "id": 6,
+      "options": {},
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cg46fq5i2i48wf"
+          },
+          "expr": "sum((wlanAPFrameBandwidthRate{job=\"snmp_aps\"} and on(instance,wlanAPMacAddress) wlanAPGroupName{job=\"snmp_aps\",wlanAPGroupName=\"SIT-Event\"})) * 1000",
+          "instant": true,
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "Current BSSID bandwidth",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cg46fq5i2i48wf"
+      },
+      "description": "1 = up, 2 = down as reported by the controller.",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "mappings": [
+            {
+              "options": {
+                "1": {
+                  "color": "green",
+                  "text": "UP"
+                },
+                "2": {
+                  "color": "red",
+                  "text": "DOWN"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 2
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 4
+      },
+      "id": 7,
+      "options": {
+        "mergeValues": true,
+        "showValue": "auto"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cg46fq5i2i48wf"
+          },
+          "expr": "(wlanAPStatus{job=\"snmp_aps\"} and on(instance,wlanAPMacAddress) wlanAPGroupName{job=\"snmp_aps\",wlanAPGroupName=\"SIT-Event\"})",
+          "instant": false,
+          "legendFormat": "{{wlanAPName}}",
+          "refId": "A"
+        }
+      ],
+      "title": "AP status (controller)",
+      "type": "state-timeline"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cg46fq5i2i48wf"
+      },
+      "description": "Sum of associated clients across each AP radio.",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 11
+      },
+      "id": 8,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cg46fq5i2i48wf"
+          },
+          "expr": "sum by (wlanAPName) ((wlanAPRadioNumAssociatedClients{job=\"snmp_aps\"} and on(instance,wlanAPMacAddress) wlanAPGroupName{job=\"snmp_aps\",wlanAPGroupName=\"SIT-Event\"}))",
+          "instant": false,
+          "legendFormat": "{{wlanAPName}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Clients by AP",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cg46fq5i2i48wf"
+      },
+      "description": "Controller-reported radio utilization, 0–100%.",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 11
+      },
+      "id": 9,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cg46fq5i2i48wf"
+          },
+          "expr": "(wlanAPRadioUtilization{job=\"snmp_aps\"} and on(instance,wlanAPMacAddress) wlanAPGroupName{job=\"snmp_aps\",wlanAPGroupName=\"SIT-Event\"})",
+          "instant": false,
+          "legendFormat": "{{wlanAPName}} / radio {{wlanAPRadioNumber}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Radio utilization",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cg46fq5i2i48wf"
+      },
+      "description": "BSSID data bytes received by the AP; summed across BSSIDs and radios.",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "unit": "bps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 19
+      },
+      "id": 10,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cg46fq5i2i48wf"
+          },
+          "expr": "sum by (wlanAPName) ((rate(wlanAPRxDataBytes64{job=\"snmp_aps\"}[5m]) and on(instance,wlanAPMacAddress) wlanAPGroupName{job=\"snmp_aps\",wlanAPGroupName=\"SIT-Event\"})) * 8",
+          "instant": false,
+          "legendFormat": "{{wlanAPName}}",
+          "refId": "A"
+        }
+      ],
+      "title": "AP receive traffic",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cg46fq5i2i48wf"
+      },
+      "description": "BSSID data bytes transmitted by the AP; summed across BSSIDs and radios.",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "unit": "bps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 19
+      },
+      "id": 11,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cg46fq5i2i48wf"
+          },
+          "expr": "sum by (wlanAPName) ((rate(wlanAPTxDataBytes64{job=\"snmp_aps\"}[5m]) and on(instance,wlanAPMacAddress) wlanAPGroupName{job=\"snmp_aps\",wlanAPGroupName=\"SIT-Event\"})) * 8",
+          "instant": false,
+          "legendFormat": "{{wlanAPName}}",
+          "refId": "A"
+        }
+      ],
+      "title": "AP transmit traffic",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cg46fq5i2i48wf"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "blue",
+            "mode": "fixed"
+          },
+          "decimals": 0,
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 27
+      },
+      "id": 12,
+      "options": {},
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cg46fq5i2i48wf"
+          },
+          "expr": "(wlanAPUpTime{job=\"snmp_aps\"} and on(instance,wlanAPMacAddress) wlanAPGroupName{job=\"snmp_aps\",wlanAPGroupName=\"SIT-Event\"}) / 100",
+          "instant": true,
+          "legendFormat": "{{wlanAPName}}",
+          "refId": "A"
+        }
+      ],
+      "title": "AP uptime since controller bootstrap",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cg46fq5i2i48wf"
+      },
+      "description": "Sum of the BSSID bandwidth gauges; units converted from Kbps to bps.",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "unit": "bps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 27
+      },
+      "id": 13,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cg46fq5i2i48wf"
+          },
+          "expr": "sum by (wlanAPName) ((wlanAPFrameBandwidthRate{job=\"snmp_aps\"} and on(instance,wlanAPMacAddress) wlanAPGroupName{job=\"snmp_aps\",wlanAPGroupName=\"SIT-Event\"})) * 1000",
+          "instant": false,
+          "legendFormat": "{{wlanAPName}}",
+          "refId": "A"
+        }
+      ],
+      "title": "BSSID bandwidth by AP",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cg46fq5i2i48wf"
+      },
+      "description": "Controller-reported percentage of retries for each BSSID.",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 35
+      },
+      "id": 14,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cg46fq5i2i48wf"
+          },
+          "expr": "(wlanAPFrameRetryRate{job=\"snmp_aps\"} and on(instance,wlanAPMacAddress) wlanAPGroupName{job=\"snmp_aps\",wlanAPGroupName=\"SIT-Event\"})",
+          "instant": false,
+          "legendFormat": "{{wlanAPName}} / {{wlanAPBSSID}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Wi-Fi retry rate by AP and BSSID",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cg46fq5i2i48wf"
+      },
+      "description": "Signal health uses SNR only: 0–20 dB Poor, 21–35 Fair, 36+ Good. It is not the Aruba controller health score. Missing SNR is unknown.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            }
+          },
+          "unit": "bytes"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Signal health"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "from": 0,
+                      "result": {
+                        "color": "red",
+                        "index": 0,
+                        "text": "Poor"
+                      },
+                      "to": 20
+                    },
+                    "type": "range"
+                  },
+                  {
+                    "options": {
+                      "from": 21,
+                      "result": {
+                        "color": "orange",
+                        "index": 1,
+                        "text": "Fair"
+                      },
+                      "to": 35
+                    },
+                    "type": "range"
+                  },
+                  {
+                    "options": {
+                      "from": 36,
+                      "result": {
+                        "color": "green",
+                        "index": 2,
+                        "text": "Good"
+                      },
+                      "to": 200
+                    },
+                    "type": "range"
+                  }
+                ]
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SNR (dB)"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dB"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 59
+      },
+      "id": 18,
+      "options": {
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Data since session began"
+          }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cg46fq5i2i48wf"
+          },
+          "expr": "(clientSessionInfo{job=\"aruba_event_clients\"} * 0) + on(instance,clientMac,clientIp) group_left() (clientRxBytes{job=\"aruba_event_clients\"} + clientTxBytes{job=\"aruba_event_clients\"})",
+          "format": "table",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Connected clients: AP and session data",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "__name__": true,
+              "apBSSID": true,
+              "instance": true,
+              "job": true,
+              "name": true,
+              "role": true,
+              "site": true
+            },
+            "renameByName": {
+              "Value": "Data since session began",
+              "apLocation": "AP",
+              "clientIp": "IP",
+              "clientMac": "MAC",
+              "clientName": "Client",
+              "signalSNR": "SNR (dB)",
+              "ssid": "SSID"
+            }
+          }
+        },
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "destinationType": "number",
+                "targetField": "SNR (dB)"
+              }
+            ]
+          }
+        },
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "Signal health",
+            "binary": {
+              "left": "SNR (dB)",
+              "operator": "+",
+              "right": "0"
+            },
+            "mode": "binary"
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "indexByName": {
+              "AP": 0,
+              "Client": 1,
+              "Data since session began": 6,
+              "IP": 2,
+              "MAC": 7,
+              "SNR (dB)": 4,
+              "SSID": 3,
+              "Signal health": 5
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cg46fq5i2i48wf"
+      },
+      "description": "Controller-reported per-client data rates; each direction shows its top 10.",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 71
+      },
+      "id": 19,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cg46fq5i2i48wf"
+          },
+          "expr": "topk(10, rate(clientRxBytes{job=\"aruba_event_clients\"}[5m]) * 8)",
+          "legendFormat": "RX {{clientName}} / {{clientIp}} / {{apLocation}}",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cg46fq5i2i48wf"
+          },
+          "expr": "topk(10, rate(clientTxBytes{job=\"aruba_event_clients\"}[5m]) * 8)",
+          "legendFormat": "TX {{clientName}} / {{clientIp}} / {{apLocation}}",
+          "refId": "B"
+        }
+      ],
+      "title": "Client traffic — top 10 RX and TX",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 39,
+  "tags": [
+    "network",
+    "ap",
+    "snmp",
+    "aruba",
+    "sit event"
+  ],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timezone": "browser",
+  "title": "SIT Event APs (VM controller metrics)",
+  "uid": "sit-event-aps",
+  "version": 0
+}

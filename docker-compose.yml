@@ -16,10 +16,10 @@ services:
       - '--web.config.file=/etc/prometheus/web.yml'
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-      - ./prometheus/alert.rules.yml:/etc/prometheus/alert.rules.yml:ro
       - ./prometheus/targets:/etc/prometheus/targets:ro
       - prometheus_data:/prometheus
-      - ./prometheus/web.yml:/etc/prometheus/web.yml:ro
+      - ./prometheus/web.local.yml:/etc/prometheus/web.yml:ro
+      - ./prometheus/prometheus.password:/etc/prometheus/prometheus.password:ro
     ports:
       - "9090:9090"
     networks: [monitoring]
@@ -36,6 +36,8 @@ services:
       GF_USERS_ALLOW_SIGN_UP: "false"
       GF_SERVER_ROOT_URL: ${GRAFANA_ROOT_URL:-http://localhost:3000}
       GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /var/lib/grafana/dashboards/network-overview.json
+      PROMETHEUS_BASIC_USER: ${Prometheus_ADMIN_USER:?set Prometheus_ADMIN_USER in .env}
+      PROMETHEUS_BASIC_PASSWORD: ${PROMETHEUS_BASIC_PASSWORD:?set PROMETHEUS_BASIC_PASSWORD in .env}
       TZ: ${TZ:-UTC}
     volumes:
       - grafana_data:/var/lib/grafana
@@ -66,13 +68,14 @@ services:
     image: prom/snmp-exporter:v0.31.0
     container_name: snmp-exporter
     restart: unless-stopped
-    # default snmp.yml (modules: if_mib, ubiquiti_unifi, aruba, mikrotik, ...) ships in the image;
-    # auth.yml adds your own SNMP credentials on top.
+    # Credentials are local; the Aruba module contains no credentials.
     command:
       - --config.file=/etc/snmp_exporter/snmp.yml
       - --config.file=/etc/snmp_exporter/auth.yml
+      - --config.file=/etc/snmp_exporter/aruba.yml
     volumes:
-      - ./snmp/auth.yml:/etc/snmp_exporter/auth.yml:ro
+      - ./snmp/auth.local.yml:/etc/snmp_exporter/auth.yml:ro
+      - ./snmp/aruba.yml:/etc/snmp_exporter/aruba.yml:ro
     networks: [monitoring]
 
   # ------------------------- Blackbox exporter (ping / HTTP / TCP incl. NDI)
