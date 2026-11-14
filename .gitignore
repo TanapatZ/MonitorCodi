@@ -1,0 +1,8 @@
+.env
+.env.*
+!.env.example
+snmp/*.local.yml
+prometheus/*.local.yml
+prometheus/*.password
+prometheus/targets/*.local.yml
+*.local.json
