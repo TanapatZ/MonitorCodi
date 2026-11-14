@@ -1,0 +1,1908 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Clean, Uncluttered Bandwidth (Bitrate) & Packet Rate Dashboard for KMUTT SIT EventOps: NDI Ports (5,6,7,8,9), Auditorium, Glass Room (LX3), Floor 10 (LX10), and Wireless Controller",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [
+    {
+      "includeVars": false,
+      "keepTime": true,
+      "targetBlank": false,
+      "title": "SIT Event AP dashboard",
+      "type": "link",
+      "url": "/d/sit-event-aps"
+    }
+  ],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 100,
+      "title": "BLOCK 1: SYSTEM OVERVIEW & MAIN UPLINK BANDWIDTH",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "All switch and wireless controller scrape states, independent of chart filters.",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "color": "#F2495C",
+                  "text": "DOWN"
+                },
+                "1": {
+                  "color": "#73BF69",
+                  "text": "ONLINE"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#F2495C"
+              },
+              {
+                "color": "#73BF69",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 1
+      },
+      "id": 1,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value_and_name"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "up{job=~\"snmp_switchesLX3|snmp_switchesLX10|snmp_aps\"}",
+          "instant": true,
+          "legendFormat": "{{name}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Switches & WLC Online Status",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#FF9830"
+              },
+              {
+                "color": "#73BF69",
+                "value": 1000000
+              }
+            ]
+          },
+          "unit": "bps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 1
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "rate(ifHCInOctets{job=\"snmp_switchesLX10\", name=\"eventopsLx10Core\", ifName=\"1/1/28\"}[2m]) * 8 + rate(ifHCOutOctets{job=\"snmp_switchesLX10\", name=\"eventopsLx10Core\", ifName=\"1/1/28\"}[2m]) * 8",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Floor 10 -> Floor 3 Trunk Bandwidth (Port 1/1/28)",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#5794F2"
+              },
+              {
+                "color": "#73BF69",
+                "value": 100000
+              }
+            ]
+          },
+          "unit": "bps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 12,
+        "y": 1
+      },
+      "id": 3,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "rate(ifHCInOctets{job=\"snmp_aps\", ifName=\"GE0/0/5\"}[2m]) * 8 + rate(ifHCOutOctets{job=\"snmp_aps\", ifName=\"GE0/0/5\"}[2m]) * 8",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Wireless Controller 10G Bandwidth (Port GE0/0/5)",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "Sum of traffic across switch ports; the same traffic can pass through multiple ports. This is not total internet bandwidth.",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#5794F2"
+              },
+              {
+                "color": "#73BF69",
+                "value": 1000000
+              }
+            ]
+          },
+          "unit": "bps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 1
+      },
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "sum(rate(ifHCInOctets{job=~\"snmp_switchesLX3|snmp_switchesLX10\", name=~\"$switch\", ifName!~\"^(DEFAULT_VLAN|VLAN.*|vlan.*|lo.*|loop|PC-.*)$\"}[2m]) * 8 + rate(ifHCOutOctets{job=~\"snmp_switchesLX3|snmp_switchesLX10\", name=~\"$switch\", ifName!~\"^(DEFAULT_VLAN|VLAN.*|vlan.*|lo.*|loop|PC-.*)$\"}[2m]) * 8)",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Sum of switch port RX + TX (traffic may be counted more than once)",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 18
+      },
+      "id": 101,
+      "title": "BLOCK 2: NDI CAMERA PORTS (PORTS 5, 6, 7, 8, 9 & ACTIVE CAMERA PORTS) - BANDWIDTH (BITRATE) & PACKETS",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cg46fq5i2i48wf"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 5
+      },
+      "id": 201,
+      "links": [
+        {
+          "targetBlank": false,
+          "title": "Open SIT Event AP dashboard",
+          "url": "/d/sit-event-aps"
+        }
+      ],
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cg46fq5i2i48wf"
+          },
+          "expr": "sum((wlanAPStatus{job=\"snmp_aps\"} == bool 1) and on(instance,wlanAPMacAddress) wlanAPGroupName{job=\"snmp_aps\",wlanAPGroupName=\"SIT-Event\"})",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "title": "SIT-Event APs online",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cg46fq5i2i48wf"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 5
+      },
+      "id": 202,
+      "links": [
+        {
+          "targetBlank": false,
+          "title": "Open SIT Event AP dashboard",
+          "url": "/d/sit-event-aps"
+        }
+      ],
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cg46fq5i2i48wf"
+          },
+          "expr": "sum((wlanAPStatus{job=\"snmp_aps\"} == bool 2) and on(instance,wlanAPMacAddress) wlanAPGroupName{job=\"snmp_aps\",wlanAPGroupName=\"SIT-Event\"})",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "title": "SIT-Event APs offline",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cg46fq5i2i48wf"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 12,
+        "y": 5
+      },
+      "id": 203,
+      "links": [
+        {
+          "targetBlank": false,
+          "title": "Open SIT Event AP dashboard",
+          "url": "/d/sit-event-aps"
+        }
+      ],
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cg46fq5i2i48wf"
+          },
+          "expr": "sum(wlanAPRadioNumAssociatedClients{job=\"snmp_aps\"} and on(instance,wlanAPMacAddress) wlanAPGroupName{job=\"snmp_aps\",wlanAPGroupName=\"SIT-Event\"})",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "title": "SIT-Event clients",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cg46fq5i2i48wf"
+      },
+      "description": "Scrape health for the controller; AP values may be unavailable if down.",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "color": "red",
+                  "text": "DOWN"
+                },
+                "1": {
+                  "color": "green",
+                  "text": "UP"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 2
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 5
+      },
+      "id": 204,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cg46fq5i2i48wf"
+          },
+          "expr": "up{job=\"snmp_aps\"}",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "title": "AP controller SNMP",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cg46fq5i2i48wf"
+      },
+      "description": "Operational state of floor 10 trunk port 1/1/28.",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "mappings": [
+            {
+              "options": {
+                "1": {
+                  "color": "green",
+                  "text": "LINK UP"
+                },
+                "2": {
+                  "color": "red",
+                  "text": "LINK DOWN"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 2
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 0,
+        "y": 9
+      },
+      "id": 205,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cg46fq5i2i48wf"
+          },
+          "expr": "ifOperStatus{job=\"snmp_switchesLX10\",name=\"eventopsLx10Core\",ifName=\"1/1/28\"}",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Floor 10 ↔ Floor 3 uplink",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cg46fq5i2i48wf"
+      },
+      "description": "Operational state of controller interface GE0/0/5.",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "mappings": [
+            {
+              "options": {
+                "1": {
+                  "color": "green",
+                  "text": "LINK UP"
+                },
+                "2": {
+                  "color": "red",
+                  "text": "LINK DOWN"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 2
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 12,
+        "y": 9
+      },
+      "id": 206,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cg46fq5i2i48wf"
+          },
+          "expr": "ifOperStatus{job=\"snmp_aps\",ifName=\"GE0/0/5\"}",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Wireless controller uplink",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "Bandwidth (bps / Mbps) on Ports 5, 6, 7, 8, 9 across all Floor 3 switches (Auditorium & Glass Room) Filtered by Device / Switch and Port Number above.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "opacity",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "showPoints": "never"
+          },
+          "unit": "bps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 19
+      },
+      "id": 5,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "rate(ifHCInOctets{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_switchesLX3\", name=~\"$switch\", ifName=~\"5|6|7|8|9\"}[2m]) * 8",
+          "legendFormat": "RX (Into Switch): {{name}} Port {{ifName}}",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "-rate(ifHCOutOctets{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_switchesLX3\", name=~\"$switch\", ifName=~\"5|6|7|8|9\"}[2m]) * 8",
+          "legendFormat": "TX (Out of Switch): {{name}} Port {{ifName}}",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "Ports 5, 6, 7, 8, 9 (NDI Camera Zone) - Bandwidth / Bitrate (RX Positive / TX Negative)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "Total Unicast + Multicast + Broadcast Packets per second on Ports 5, 6, 7, 8, 9 Filtered by Device / Switch and Port Number above.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "opacity",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "showPoints": "never"
+          },
+          "unit": "pps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 19
+      },
+      "id": 6,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "rate(ifHCInUcastPkts{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_switchesLX3\", name=~\"$switch\", ifName=~\"5|6|7|8|9\"}[2m]) + rate(ifHCOutUcastPkts{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_switchesLX3\", name=~\"$switch\", ifName=~\"5|6|7|8|9\"}[2m]) + rate(ifHCInMulticastPkts{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_switchesLX3\", name=~\"$switch\", ifName=~\"5|6|7|8|9\"}[2m]) + rate(ifHCOutMulticastPkts{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_switchesLX3\", name=~\"$switch\", ifName=~\"5|6|7|8|9\"}[2m])",
+          "legendFormat": "Packets/s: {{name}} Port {{ifName}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Ports 5, 6, 7, 8, 9 (NDI Camera Zone) - Packet Rate (Packets / sec)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Link Status"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "basic",
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "1": {
+                        "color": "#73BF69",
+                        "text": "LINK UP"
+                      },
+                      "2": {
+                        "color": "#343741",
+                        "text": "DOWN (UNPLUGGED)"
+                      }
+                    },
+                    "type": "value"
+                  }
+                ]
+              },
+              {
+                "id": "custom.align",
+                "value": "center"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Bitrate RX (Into Switch)"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "bps"
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "gauge",
+                  "valueDisplayMode": "text"
+                }
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 100000000
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "#FF9830"
+                    },
+                    {
+                      "color": "#73BF69",
+                      "value": 1000000
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Bitrate TX (Out of Switch)"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "bps"
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "gauge",
+                  "valueDisplayMode": "text"
+                }
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 100000000
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "#5794F2"
+                    },
+                    {
+                      "color": "#73BF69",
+                      "value": 1000000
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Packets / sec (pps)"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "pps"
+              },
+              {
+                "id": "decimals",
+                "value": 1
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 27
+      },
+      "id": 7,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        },
+        "showHeader": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "ifOperStatus{job=\"snmp_switchesLX3\", name=~\"$switch\", ifName=~\"1|2|3|4|5|6|7|8|9\"} == 1 or ifOperStatus{job=\"snmp_switchesLX3\", name=~\"eventopsAudi1|eventopsAudi2\", ifName=~\"5|6|7|8|9\"}",
+          "format": "table",
+          "instant": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "rate(ifHCInOctets{job=\"snmp_switchesLX3\", name=~\"$switch\", ifName=~\"1|2|3|4|5|6|7|8|9\"}[2m]) * 8",
+          "format": "table",
+          "instant": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "rate(ifHCOutOctets{job=\"snmp_switchesLX3\", name=~\"$switch\", ifName=~\"1|2|3|4|5|6|7|8|9\"}[2m]) * 8",
+          "format": "table",
+          "instant": true,
+          "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "rate(ifHCInUcastPkts{job=\"snmp_switchesLX3\", name=~\"$switch\", ifName=~\"1|2|3|4|5|6|7|8|9\"}[2m]) + rate(ifHCOutUcastPkts{job=\"snmp_switchesLX3\", name=~\"$switch\", ifName=~\"1|2|3|4|5|6|7|8|9\"}[2m]) + rate(ifHCInMulticastPkts{job=\"snmp_switchesLX3\", name=~\"$switch\", ifName=~\"1|2|3|4|5|6|7|8|9\"}[2m]) + rate(ifHCOutMulticastPkts{job=\"snmp_switchesLX3\", name=~\"$switch\", ifName=~\"1|2|3|4|5|6|7|8|9\"}[2m])",
+          "format": "table",
+          "instant": true,
+          "refId": "D"
+        }
+      ],
+      "title": "Live Port Table: Ports 5, 6, 7, 8, 9 & All Active Access Ports (Status / Bitrate RX / Bitrate TX / Packets per sec)",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "filterByValue",
+          "options": {
+            "filters": [
+              {
+                "config": {
+                  "id": "isNotNull",
+                  "options": {}
+                },
+                "fieldName": "Value #A"
+              }
+            ],
+            "match": "all",
+            "type": "include"
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "__name__": true,
+              "ifAlias": true,
+              "ifDescr": true,
+              "ifIndex": true,
+              "job": true,
+              "org": true,
+              "role": true,
+              "site": true
+            },
+            "indexByName": {
+              "Value #A": 3,
+              "Value #B": 4,
+              "Value #C": 5,
+              "Value #D": 6,
+              "ifName": 2,
+              "instance": 1,
+              "name": 0
+            },
+            "renameByName": {
+              "Value #A": "Link Status",
+              "Value #B": "Bitrate RX (Into Switch)",
+              "Value #C": "Bitrate TX (Out of Switch)",
+              "Value #D": "Packets / sec (pps)",
+              "ifName": "Port Number",
+              "instance": "Switch IP",
+              "name": "Switch Name"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 35
+      },
+      "id": 102,
+      "title": "BLOCK 3: AUDITORIUM ROOM (eventopsAudi1 10.63.103.5 & eventopsAudi2 10.63.103.4) - BANDWIDTH & PACKETS",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "Filtered by Device / Switch and Port Number above.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "opacity",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "showPoints": "never"
+          },
+          "unit": "bps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 36
+      },
+      "id": 8,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "rate(ifHCInOctets{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_switchesLX3\", name=~\"eventopsAudi1|eventopsAudi2\", ifName!~\"^(DEFAULT_VLAN|VLAN.*|vlan.*|lo.*|loop|PC-.*)$\"}[2m]) * 8 and (ifOperStatus{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_switchesLX3\", name=~\"eventopsAudi1|eventopsAudi2\", ifName!~\"^(DEFAULT_VLAN|VLAN.*|vlan.*|lo.*|loop|PC-.*)$\"} == 1)",
+          "legendFormat": "RX: {{name}} Port {{ifName}}",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "-rate(ifHCOutOctets{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_switchesLX3\", name=~\"eventopsAudi1|eventopsAudi2\", ifName!~\"^(DEFAULT_VLAN|VLAN.*|vlan.*|lo.*|loop|PC-.*)$\"}[2m]) * 8 and (ifOperStatus{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_switchesLX3\", name=~\"eventopsAudi1|eventopsAudi2\", ifName!~\"^(DEFAULT_VLAN|VLAN.*|vlan.*|lo.*|loop|PC-.*)$\"} == 1)",
+          "legendFormat": "TX: {{name}} Port {{ifName}}",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "Auditorium Room (eventopsAudi1 & eventopsAudi2) - Bandwidth / Bitrate by Port (RX / TX)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "Filtered by Device / Switch and Port Number above.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "opacity",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "showPoints": "never"
+          },
+          "unit": "pps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 36
+      },
+      "id": 9,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "(rate(ifHCInUcastPkts{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_switchesLX3\", name=~\"eventopsAudi1|eventopsAudi2\", ifName!~\"^(DEFAULT_VLAN|VLAN.*|vlan.*|lo.*|loop|PC-.*)$\"}[2m]) + rate(ifHCOutUcastPkts{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_switchesLX3\", name=~\"eventopsAudi1|eventopsAudi2\", ifName!~\"^(DEFAULT_VLAN|VLAN.*|vlan.*|lo.*|loop|PC-.*)$\"}[2m]) + rate(ifHCInMulticastPkts{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_switchesLX3\", name=~\"eventopsAudi1|eventopsAudi2\", ifName!~\"^(DEFAULT_VLAN|VLAN.*|vlan.*|lo.*|loop|PC-.*)$\"}[2m]) + rate(ifHCOutMulticastPkts{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_switchesLX3\", name=~\"eventopsAudi1|eventopsAudi2\", ifName!~\"^(DEFAULT_VLAN|VLAN.*|vlan.*|lo.*|loop|PC-.*)$\"}[2m])) and (ifOperStatus{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_switchesLX3\", name=~\"eventopsAudi1|eventopsAudi2\", ifName!~\"^(DEFAULT_VLAN|VLAN.*|vlan.*|lo.*|loop|PC-.*)$\"} == 1)",
+          "legendFormat": "Packets/s: {{name}} Port {{ifName}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Auditorium Room (eventopsAudi1 & eventopsAudi2) - Packet Rate by Port (Packets / sec)",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 44
+      },
+      "id": 103,
+      "title": "BLOCK 4: GLASS ROOM & FLOOR 3 (eventopsLx3Core .1 / eventopsLx3/1 .3 / eventopsLx3/2 .2) - BANDWIDTH & PACKETS",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "Filtered by Device / Switch and Port Number above.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "opacity",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "showPoints": "never"
+          },
+          "unit": "bps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 45
+      },
+      "id": 10,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "rate(ifHCInOctets{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_switchesLX3\", name=~\"eventopsLx3Core|eventopsLx3/1|eventopsLx3/2\", ifName!~\"^(DEFAULT_VLAN|VLAN.*|vlan.*|lo.*|loop|PC-.*)$\"}[2m]) * 8 and (ifOperStatus{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_switchesLX3\", name=~\"eventopsLx3Core|eventopsLx3/1|eventopsLx3/2\", ifName!~\"^(DEFAULT_VLAN|VLAN.*|vlan.*|lo.*|loop|PC-.*)$\"} == 1)",
+          "legendFormat": "RX: {{name}} Port {{ifName}}",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "-rate(ifHCOutOctets{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_switchesLX3\", name=~\"eventopsLx3Core|eventopsLx3/1|eventopsLx3/2\", ifName!~\"^(DEFAULT_VLAN|VLAN.*|vlan.*|lo.*|loop|PC-.*)$\"}[2m]) * 8 and (ifOperStatus{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_switchesLX3\", name=~\"eventopsLx3Core|eventopsLx3/1|eventopsLx3/2\", ifName!~\"^(DEFAULT_VLAN|VLAN.*|vlan.*|lo.*|loop|PC-.*)$\"} == 1)",
+          "legendFormat": "TX: {{name}} Port {{ifName}}",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "Glass Room & LX3 Switches (Lx3Core, Lx3/1, Lx3/2) - Bandwidth / Bitrate by Port (RX / TX)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "Filtered by Device / Switch and Port Number above.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "opacity",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "showPoints": "never"
+          },
+          "unit": "pps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 45
+      },
+      "id": 11,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "(rate(ifHCInUcastPkts{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_switchesLX3\", name=~\"eventopsLx3Core|eventopsLx3/1|eventopsLx3/2\", ifName!~\"^(DEFAULT_VLAN|VLAN.*|vlan.*|lo.*|loop|PC-.*)$\"}[2m]) + rate(ifHCOutUcastPkts{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_switchesLX3\", name=~\"eventopsLx3Core|eventopsLx3/1|eventopsLx3/2\", ifName!~\"^(DEFAULT_VLAN|VLAN.*|vlan.*|lo.*|loop|PC-.*)$\"}[2m]) + rate(ifHCInMulticastPkts{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_switchesLX3\", name=~\"eventopsLx3Core|eventopsLx3/1|eventopsLx3/2\", ifName!~\"^(DEFAULT_VLAN|VLAN.*|vlan.*|lo.*|loop|PC-.*)$\"}[2m]) + rate(ifHCOutMulticastPkts{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_switchesLX3\", name=~\"eventopsLx3Core|eventopsLx3/1|eventopsLx3/2\", ifName!~\"^(DEFAULT_VLAN|VLAN.*|vlan.*|lo.*|loop|PC-.*)$\"}[2m])) and (ifOperStatus{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_switchesLX3\", name=~\"eventopsLx3Core|eventopsLx3/1|eventopsLx3/2\", ifName!~\"^(DEFAULT_VLAN|VLAN.*|vlan.*|lo.*|loop|PC-.*)$\"} == 1)",
+          "legendFormat": "Packets/s: {{name}} Port {{ifName}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Glass Room & LX3 Switches (Lx3Core, Lx3/1, Lx3/2) - Packet Rate by Port (Packets / sec)",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 53
+      },
+      "id": 104,
+      "title": "BLOCK 5: FLOOR 10 SWITCH (eventopsLx10Core 10.13.104.254 - Trunk Port 1/1/28 & NDI Cameras) - BANDWIDTH & PACKETS",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "Filtered by Device / Switch and Port Number above.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "opacity",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "showPoints": "never"
+          },
+          "unit": "bps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 54
+      },
+      "id": 12,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "rate(ifHCInOctets{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_switchesLX10\", name=\"eventopsLx10Core\", ifName!~\"^(DEFAULT_VLAN|VLAN.*|vlan.*|lo.*|loop|PC-.*)$\"}[2m]) * 8 and (ifOperStatus{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_switchesLX10\", name=\"eventopsLx10Core\", ifName!~\"^(DEFAULT_VLAN|VLAN.*|vlan.*|lo.*|loop|PC-.*)$\"} == 1)",
+          "legendFormat": "RX: {{ifName}} ({{ifAlias}})",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "-rate(ifHCOutOctets{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_switchesLX10\", name=\"eventopsLx10Core\", ifName!~\"^(DEFAULT_VLAN|VLAN.*|vlan.*|lo.*|loop|PC-.*)$\"}[2m]) * 8 and (ifOperStatus{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_switchesLX10\", name=\"eventopsLx10Core\", ifName!~\"^(DEFAULT_VLAN|VLAN.*|vlan.*|lo.*|loop|PC-.*)$\"} == 1)",
+          "legendFormat": "TX: {{ifName}} ({{ifAlias}})",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "Floor 10 Switch (eventopsLx10Core - 10.13.104.254) - Bandwidth / Bitrate by Port (RX / TX)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "Filtered by Device / Switch and Port Number above.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "opacity",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "showPoints": "never"
+          },
+          "unit": "pps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 54
+      },
+      "id": 13,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "(rate(ifHCInUcastPkts{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_switchesLX10\", name=\"eventopsLx10Core\", ifName!~\"^(DEFAULT_VLAN|VLAN.*|vlan.*|lo.*|loop|PC-.*)$\"}[2m]) + rate(ifHCOutUcastPkts{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_switchesLX10\", name=\"eventopsLx10Core\", ifName!~\"^(DEFAULT_VLAN|VLAN.*|vlan.*|lo.*|loop|PC-.*)$\"}[2m]) + rate(ifHCInMulticastPkts{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_switchesLX10\", name=\"eventopsLx10Core\", ifName!~\"^(DEFAULT_VLAN|VLAN.*|vlan.*|lo.*|loop|PC-.*)$\"}[2m]) + rate(ifHCOutMulticastPkts{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_switchesLX10\", name=\"eventopsLx10Core\", ifName!~\"^(DEFAULT_VLAN|VLAN.*|vlan.*|lo.*|loop|PC-.*)$\"}[2m])) and (ifOperStatus{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_switchesLX10\", name=\"eventopsLx10Core\", ifName!~\"^(DEFAULT_VLAN|VLAN.*|vlan.*|lo.*|loop|PC-.*)$\"} == 1)",
+          "legendFormat": "Packets/s: {{ifName}} ({{ifAlias}})",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Floor 10 Switch (eventopsLx10Core - 10.13.104.254) - Packet Rate by Port (Packets / sec)",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 62
+      },
+      "id": 105,
+      "title": "BLOCK 6: WIRELESS CONTROLLER (APcontroller 10.4.92.1 - Port GE0/0/5 & Wireless VLANs) - BANDWIDTH & PACKETS",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "Filtered by Device / Switch and Port Number above.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "opacity",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "showPoints": "never"
+          },
+          "unit": "bps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 63
+      },
+      "id": 14,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "rate(ifHCInOctets{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_aps\", ifName!=\"loop\"}[2m]) * 8 and (ifOperStatus{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_aps\", ifName!=\"loop\"} == 1)",
+          "legendFormat": "RX: {{ifName}} ({{ifAlias}})",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "-rate(ifHCOutOctets{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_aps\", ifName!=\"loop\"}[2m]) * 8 and (ifOperStatus{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_aps\", ifName!=\"loop\"} == 1)",
+          "legendFormat": "TX: {{ifName}} ({{ifAlias}})",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "Wireless Controller (APcontroller 10.4.92.1) - Bandwidth / Bitrate (GE0/0/5 & Wireless VLANs)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "Filtered by Device / Switch and Port Number above.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "opacity",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "showPoints": "never"
+          },
+          "unit": "pps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 63
+      },
+      "id": 15,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "rate(ifHCInUcastPkts{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_aps\", ifName=\"GE0/0/5\"}[2m]) + rate(ifHCOutUcastPkts{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_aps\", ifName=\"GE0/0/5\"}[2m])",
+          "legendFormat": "Unicast Packets/s (GE0/0/5)",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "rate(ifHCInMulticastPkts{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_aps\", ifName=\"GE0/0/5\"}[2m]) + rate(ifHCOutMulticastPkts{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_aps\", ifName=\"GE0/0/5\"}[2m])",
+          "legendFormat": "Multicast Packets/s (GE0/0/5)",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "rate(ifHCInBroadcastPkts{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_aps\", ifName=\"GE0/0/5\"}[2m]) + rate(ifHCOutBroadcastPkts{name=~\"$switch\",ifName=~\"$ifName\",job=\"snmp_aps\", ifName=\"GE0/0/5\"}[2m])",
+          "legendFormat": "Broadcast Packets/s (GE0/0/5)",
+          "range": true,
+          "refId": "C"
+        }
+      ],
+      "title": "Wireless Controller (APcontroller 10.4.92.1) - Packet Rate (Unicast / Multicast / Broadcast pps on GE0/0/5)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cg46fq5i2i48wf"
+      },
+      "description": "Ports 13–14 confirmed by LLDP as connected between EventOps switches, plus floor 10–3 fiber 1/1/28. Selection is based on verified current wiring. No data means the port could not be read. Switch names omit the common eventops prefix for readability.",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "options": {
+                "1": {
+                  "color": "green",
+                  "text": "UP"
+                },
+                "2": {
+                  "color": "red",
+                  "text": "DOWN"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 2
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 24,
+        "x": 0,
+        "y": 13
+      },
+      "id": 207,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 13,
+          "valueSize": 28
+        },
+        "textMode": "value_and_name"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cg46fq5i2i48wf"
+          },
+          "expr": "label_replace((ifOperStatus{job=\"snmp_switchesLX3\",name=~\"eventopsLx3Core|eventopsLx3/2|eventopsAudi1\",ifName=~\"13|14\"} or ifOperStatus{job=\"snmp_switchesLX3\",name=~\"eventopsLx3/1|eventopsAudi2\",ifName=\"13\"} or ifOperStatus{job=\"snmp_switchesLX10\",name=\"eventopsLx10Core\",ifName=\"1/1/28\"}), \"shortName\", \"$1\", \"name\", \"eventops(.*)\")",
+          "instant": true,
+          "legendFormat": "{{shortName}} / {{ifName}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Inter-switch uplink ports and floor fiber status",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cg46fq5i2i48wf"
+      },
+      "description": "Traffic on the confirmed interconnected ports, including floor 10–3 fiber. RX and TX are shown as positive rates.",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 71
+      },
+      "id": 208,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cg46fq5i2i48wf"
+          },
+          "expr": "rate(ifHCInOctets{job=\"snmp_switchesLX3\",name=~\"eventopsLx3Core|eventopsLx3/2|eventopsAudi1\",ifName=~\"13|14\"}[2m]) * 8 or rate(ifHCInOctets{job=\"snmp_switchesLX3\",name=~\"eventopsLx3/1|eventopsAudi2\",ifName=\"13\"}[2m]) * 8 or rate(ifHCInOctets{job=\"snmp_switchesLX10\",name=\"eventopsLx10Core\",ifName=\"1/1/28\"}[2m]) * 8",
+          "legendFormat": "RX {{name}} / {{ifName}}",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cg46fq5i2i48wf"
+          },
+          "expr": "rate(ifHCOutOctets{job=\"snmp_switchesLX3\",name=~\"eventopsLx3Core|eventopsLx3/2|eventopsAudi1\",ifName=~\"13|14\"}[2m]) * 8 or rate(ifHCOutOctets{job=\"snmp_switchesLX3\",name=~\"eventopsLx3/1|eventopsAudi2\",ifName=\"13\"}[2m]) * 8 or rate(ifHCOutOctets{job=\"snmp_switchesLX10\",name=\"eventopsLx10Core\",ifName=\"1/1/28\"}[2m]) * 8",
+          "legendFormat": "TX {{name}} / {{ifName}}",
+          "refId": "B"
+        }
+      ],
+      "title": "Inter-switch uplinks and floor fiber — traffic",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 42,
+  "tags": [
+    "eventops",
+    "network",
+    "ndi",
+    "bandwidth",
+    "packets",
+    "aruba"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": true,
+          "text": "prometheus-1",
+          "value": "cg46fq5i2i48wf"
+        },
+        "hide": 0,
+        "label": "Data Source",
+        "name": "datasource",
+        "options": [],
+        "query": "prometheus",
+        "type": "datasource"
+      },
+      {
+        "allValue": ".*",
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${datasource}"
+        },
+        "includeAll": true,
+        "label": "Device / Switch",
+        "multi": true,
+        "name": "switch",
+        "options": [],
+        "query": {
+          "query": "label_values(up{job=~\"snmp_switchesLX3|snmp_switchesLX10|snmp_aps\"}, name)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allValue": ".*",
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${datasource}"
+        },
+        "includeAll": true,
+        "label": "Port Number",
+        "multi": true,
+        "name": "ifName",
+        "options": [],
+        "query": {
+          "query": "label_values(ifOperStatus{job=~\"snmp_switchesLX3|snmp_switchesLX10|snmp_aps\", name=~\"$switch\", ifName!~\"^(DEFAULT_VLAN|VLAN.*|vlan.*|lo.*|loop|PC-.*)$\"}, ifName)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 2,
+        "sort": 1,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "EventOps Network Monitoring (Bandwidth / Bitrate & Packets by Room & NDI Ports)",
+  "uid": "eventops-noc-pro",
+  "version": 0,
+  "weekStart": ""
+}

@@ -35,7 +35,7 @@ services:
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?set GRAFANA_ADMIN_PASSWORD in .env}
       GF_USERS_ALLOW_SIGN_UP: "false"
       GF_SERVER_ROOT_URL: ${GRAFANA_ROOT_URL:-http://localhost:3000}
-      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /var/lib/grafana/dashboards/network-overview.json
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /var/lib/grafana/dashboards/eventops-noc-pro.json
       PROMETHEUS_BASIC_USER: ${Prometheus_ADMIN_USER:?set Prometheus_ADMIN_USER in .env}
       PROMETHEUS_BASIC_PASSWORD: ${PROMETHEUS_BASIC_PASSWORD:?set PROMETHEUS_BASIC_PASSWORD in .env}
       TZ: ${TZ:-UTC}

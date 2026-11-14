@@ -16,10 +16,10 @@ Prometheus collects SNMP data and Grafana provides dashboards. The `SIT Event AP
 
 The controller reports AP status and group membership; the controller SNMP panel separately shows whether the scrape succeeded. Client counts sum the radios on each AP. RX and TX show rates of BSSID data counters, summed per AP; the separate bandwidth gauge is reported by the controller. Traffic direction is relative to the AP. Uptime is the time since the AP last bootstrapped with the controller. A failed controller scrape prevents AP data from refreshing; the dashboard is not a ping test.
 
-The original overview also contains ping and alert panels for components that are currently disabled, so those panels do not represent live device status. Alertmanager is not enabled.
+Alertmanager is not enabled.
 
 ## EventOps VM dashboard exports
 
-`grafana/dashboard-exports/` contains snapshots of the existing EventOps overview and SIT Event AP dashboards for manual import into Grafana. They are not automatically provisioned; their queries depend on the EventOps VM datasource and SNMP configuration. The client scrape is restricted to the eight AP names listed in `prometheus/prometheus.yml`; update that list if the monitored group changes.
+`grafana/dashboard-exports/` contains snapshots of the existing EventOps overview and SIT Event AP dashboards for manual import into Grafana. The EventOps overview is also provisioned as the default dashboard. These dashboards depend on the EventOps VM datasource and SNMP configuration. The client scrape is restricted to the eight AP names listed in `prometheus/prometheus.yml`; update that list if the monitored group changes.
 
 For the `event_ap_switches` job, provide `prometheus/targets/event-switches.local.yml` in Prometheus file discovery format.
